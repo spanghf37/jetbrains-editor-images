@@ -13,7 +13,7 @@ components:
     kubernetes:
       inlined: |
         apiVersion: v1
-        kind: Pod
+        kind: Deployment
         metadata:
           name: che-pycharm-runtime-description
           labels:
