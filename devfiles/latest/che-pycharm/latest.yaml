@@ -13,7 +13,7 @@ components:
     kubernetes:
       inlined: |
         apiVersion: v1
-        kind: Deployment
+        kind: Pod
         metadata:
           name: che-pycharm-runtime-description
           labels:
@@ -22,8 +22,8 @@ components:
             template:
               metadata:
                 name: che-pycharm-runtime-description
-                app:
-                  name: che-pycharm-runtime-description
+                labels:
+                  app: che-pycharm-runtime-description
               spec:
                 containers:
                   - image: 'quay.io/devfile/universal-developer-image:ubi8-latest'
