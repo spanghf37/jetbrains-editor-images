@@ -10,26 +10,65 @@ events:
     - init-container-command
 components:
   - name: che-pycharm-runtime-description
-    container:
-      image: 'quay.io/devfile/universal-developer-image:ubi8-latest'
-      command:
-        - /projector/entrypoint-volume.sh
-      env:
-        - name: PROJECTOR_ASSEMBLY_DIR
-          value: /projector
-        - name: PROJECTOR_CONFIG_DIR
-          value: /home/user/.jetbrains
-      volumeMounts:
-        - name: projector-volume
-          path: /projector
-        - name: projector-configuration
-          path: /home/user/.jetbrains
-        - name: projector-java-configuration
-          path: /home/user/.java
-      memoryLimit: 6144Mi
-      memoryRequest: 2048Mi
-      cpuLimit: 2000m
-      cpuRequest: 1500m
+    kubernetes:
+      inlined: |
+        apiVersion: v1
+        kind: Deployment
+        metadata:
+          name: che-pycharm-runtime-description
+          labels:
+            app: che-pycharm-runtime-description
+          spec:
+            template:
+              metadata:
+                name: che-pycharm-runtime-description
+                app:
+                  name: che-pycharm-runtime-description
+              spec:
+                containers:
+                  - image: 'quay.io/devfile/universal-developer-image:ubi8-latest'
+                    name: che-pycharm-runtime-description
+                    volumeMounts:
+                      - name: projector-volume
+                        path: /projector
+                      - name: projector-configuration
+                        path: /home/user/.jetbrains
+                      - name: projector-java-configuration
+                        path: /home/user/.java
+                    command:
+                      - /projector/entrypoint-volume.sh
+                    env:
+                      - name: PROJECTOR_ASSEMBLY_DIR
+                        value: /projector
+                      - name: PROJECTOR_CONFIG_DIR
+                        value: /home/user/.jetbrains
+                    resources:
+                      requests:
+                        memory: "2048Mi"
+                        cpu: "1500m"
+                      limits:
+                        memory: "6144Mi"
+                        cpu: "6000m"
+#    container:
+#      image: 'quay.io/devfile/universal-developer-image:ubi8-latest'
+#      command:
+#        - /projector/entrypoint-volume.sh
+#      env:
+#        - name: PROJECTOR_ASSEMBLY_DIR
+#          value: /projector
+#        - name: PROJECTOR_CONFIG_DIR
+#          value: /home/user/.jetbrains
+#      volumeMounts:
+#        - name: projector-volume
+#          path: /projector
+#        - name: projector-configuration
+#          path: /home/user/.jetbrains
+#        - name: projector-java-configuration
+#          path: /home/user/.java
+#      memoryLimit: 6144Mi
+#      memoryRequest: 2048Mi
+#      cpuLimit: 6000m
+#      cpuRequest: 1500m
       endpoints:
         - name: intellij
           attributes:
